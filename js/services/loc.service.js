@@ -57,6 +57,7 @@ function query() {
       locs.sort((p1, p2) => (p1.createdAt - p2.createdAt) * gSortBy.createdAt)
       console.log('gSortby.createdAT: ', gSortBy.createdAt)
     }
+    console.log('locs', locs)
     return locs
   })
 }

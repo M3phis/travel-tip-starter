@@ -4,6 +4,8 @@ import { mapService } from './services/map.service.js'
 
 window.onload = onInit
 
+let gUserPos = {}
+
 // To make things easier in this project structure
 // functions that are called from DOM are defined on a global app object
 window.app = {
@@ -38,11 +40,21 @@ function renderLocs(locs) {
 
   var strHTML = locs
     .map((loc) => {
+      const latLng = { lat: loc.geo.lat, lng: loc.geo.lng }
       const className = loc.id === selectedLocId ? 'active' : ''
+      let dist
+      if (!gUserPos['lat']) dist = 'NA'
+      else {
+        dist = utilService.getDistance(gUserPos, latLng, 'K')
+        console.log('latLng', latLng)
+      }
+      console.log('dist', dist)
+
       return `
         <li class="loc ${className}" data-id="${loc.id}">
             <h4>  
                 <span>${loc.name}</span>
+                <span>Distance: ${dist} KM</span>
                 <span title="${loc.rate} stars">${'★'.repeat(loc.rate)}</span>
             </h4>
             <p class="muted">
@@ -145,7 +157,12 @@ function onAddLoc(geo) {
 function loadAndRenderLocs() {
   locService
     .query()
-    .then(renderLocs)
+
+    .then((res) => {
+      //   addDistance(res)
+      renderLocs(res)
+    })
+
     .catch((err) => {
       console.error('OOPs:', err)
       flashMsg('Cannot load locations')
@@ -155,7 +172,10 @@ function loadAndRenderLocs() {
 function onPanToUserPos() {
   mapService
     .getUserPosition()
+
     .then((latLng) => {
+      gUserPos = latLng
+      console.log('gUserPos', gUserPos)
       mapService.panTo({ ...latLng, zoom: 15 })
       unDisplayLoc()
       loadAndRenderLocs()
