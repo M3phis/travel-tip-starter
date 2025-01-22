@@ -37,7 +37,10 @@ function query() {
   return storageService.query(DB_KEY).then((locs) => {
     if (gFilterBy.txt) {
       const regex = new RegExp(gFilterBy.txt, 'i')
-      locs = locs.filter((loc) => regex.test(loc.name))
+      locs = locs.filter((loc) => {
+        return regex.test(loc.name) ? true : regex.test(loc.geo.address)
+      })
+      console.log('gfilter txt: ', gFilterBy.txt)
     }
     if (gFilterBy.minRate) {
       locs = locs.filter((loc) => loc.rate >= gFilterBy.minRate)
@@ -57,7 +60,6 @@ function query() {
       locs.sort((p1, p2) => (p1.createdAt - p2.createdAt) * gSortBy.createdAt)
       console.log('gSortby.createdAT: ', gSortBy.createdAt)
     }
-    console.log('locs', locs)
     return locs
   })
 }
@@ -105,7 +107,7 @@ function getLocCountByRateMap() {
 
 function setSortBy(sortBy = {}) {
   gSortBy = sortBy
-  console.log(sortBy)
+  //console.log(sortBy)
 }
 
 function _createLocs() {
