@@ -82,12 +82,11 @@
           <section class="loc-stats">
             <h3>Statistics</h3>
             <div class="loc-stats-rate">
-                <select class="sort-by" onchange="app.onSetGroupBy(this.value)">
-                <option value="rate">Rate</option>
-                <option value="updatedAt">Updated At</option>
-              <h4>By rate:</h4>
               <div class="pie"></div>
               <ul class="legend"></ul>
+              <select class="" onchange="app.onSetGroupBy(this.value)">
+                <option value="rate">Rate</option>
+                <option value="updatedAt">Updated At</option>
             </div>
           </section>
         </section>

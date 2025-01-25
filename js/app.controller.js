@@ -310,11 +310,16 @@ function onSetFilterBy({ txt, minRate }) {
 }
 
 function onSetGroupBy(groupBy) {
-  //   if (groupBy === 'rate') {
-  //     locService.getLocCountByRateMap().then(renderPieChart)
-  //   } else if (groupBy === 'updatedAt') {
-  //     locService.getLocCountByUpdatedAt().then(renderPieChart)
-  //   }renderLocStats
+  if (groupBy === 'rate') {
+    locService.getLocCountByRateMap().then((stats) => {
+      handleStats(stats, 'loc-stats-rate')
+    })
+  } else if (groupBy === 'updatedAt') {
+    locService.getLocCountByUpdatedAt().then((stats) => {
+      handleStats(stats, 'loc-stats-rate')
+    })
+  }
+  return
 }
 
 function renderLocStats() {
