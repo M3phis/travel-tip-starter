@@ -17,6 +17,7 @@ window.app = {
   onCopyLoc,
   onShareLoc,
   onSetSortBy,
+  onSetGroupBy,
   onSetFilterBy,
 }
 
@@ -308,10 +309,27 @@ function onSetFilterBy({ txt, minRate }) {
   loadAndRenderLocs()
 }
 
+function onSetGroupBy(groupBy) {
+  //   if (groupBy === 'rate') {
+  //     locService.getLocCountByRateMap().then(renderPieChart)
+  //   } else if (groupBy === 'updatedAt') {
+  //     locService.getLocCountByUpdatedAt().then(renderPieChart)
+  //   }renderLocStats
+}
+
 function renderLocStats() {
   locService.getLocCountByRateMap().then((stats) => {
     handleStats(stats, 'loc-stats-rate')
   })
+  //   if (value === 'rate') {
+  //     locService.getLocCountByRateMap().then((stats) => {
+  //       handleStats(stats, 'loc-stats-rate')
+  //     })
+  //   } else {
+  //     locService.getLocCountByUpdatedAt().then((stats) => {
+  //       handleStats(stats, 'loc-stats-rate')
+  //     })
+  //   }
 }
 
 function handleStats(stats, selector) {
