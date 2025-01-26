@@ -19,6 +19,8 @@ window.app = {
   onSetSortBy,
   onSetGroupBy,
   onSetFilterBy,
+  onSavedLoc,
+  onCloseModal,
 }
 
 function onInit() {
@@ -55,7 +57,7 @@ function renderLocs(locs) {
         <li class="loc ${className}" data-id="${loc.id}">
             <h4>  
                 <span>${loc.name}</span>
-                <span>Distance: ${dist} KM</span>
+                <span class="distance">Distance: ${dist} KM</span>
                 <span title="${loc.rate} stars">${'★'.repeat(loc.rate)}</span>
             </h4>
             <p class="muted">
@@ -189,22 +191,55 @@ function onPanToUserPos() {
 }
 
 function onUpdateLoc(locId) {
+  const elModal = document.querySelector('.modal')
   locService.getById(locId).then((loc) => {
-    const rate = prompt('New rate?', loc.rate)
-    if (rate && rate !== loc.rate) {
-      loc.rate = rate
-      locService
-        .save(loc)
-        .then((savedLoc) => {
-          flashMsg(`Rate was set to: ${savedLoc.rate}`)
-          loadAndRenderLocs()
-        })
-        .catch((err) => {
-          console.error('OOPs:', err)
-          flashMsg('Cannot update location')
-        })
+    console.log('loc', loc)
+    elModal.innerHTML = `
+    <input class="name-input" type="text" value="${loc.name}">
+    <input class="rate-input" type="text" value="${loc.rate}">
+    <button class="save-btn"  onclick="app.onSavedLoc('${locId}')">Save</button>
+    <button class="close-btn"  onclick="app.onCloseModal()">Cancel</button>`
+
+    elModal.showModal()
+
+    // const rate = prompt('New rate?', loc.rate)
+    // if (rate && rate !== loc.rate) {
+    //   loc.rate = rate
+    //   locService
+    //     .save(loc)
+    //     .then((savedLoc) => {
+    //       flashMsg(`Rate was set to: ${savedLoc.rate}`)
+    //       loadAndRenderLocs()
+    //     })
+    //     .catch((err) => {
+    //       console.error('OOPs:', err)
+    //       flashMsg('Cannot update location')
+    //     })
+    // }
+  })
+}
+
+function onSavedLoc(locId) {
+  locService.getById(locId).then((loc) => {
+    const nameValue = document.querySelector('.name-input').value
+    const rateValue = document.querySelector('.rate-input').value
+    if (!rateValue || !nameValue) return
+    else {
+      loc.rate = rateValue
+      loc.name = nameValue
+      locService.save(loc).then((savedLoc) => {
+        flashMsg(`Location name was set to: ${savedLoc.name}
+        Rate was set to: ${savedLoc.rate}`)
+        loadAndRenderLocs()
+      })
     }
   })
+  onCloseModal()
+}
+
+function onCloseModal() {
+  const elModal = document.querySelector('.modal')
+  elModal.close()
 }
 
 function onSelectLoc(locId) {
@@ -225,7 +260,9 @@ function displayLoc(loc) {
   mapService.setMarker(loc)
 
   const el = document.querySelector('.selected-loc')
+  const dist = document.querySelector('.distance').innerHTML
   el.querySelector('.loc-name').innerText = loc.name
+  el.querySelector('.loc-distance').innerText = dist
   el.querySelector('.loc-address').innerText = loc.geo.address
   el.querySelector('.loc-rate').innerHTML = '★'.repeat(loc.rate)
   el.querySelector('[name=loc-copier]').value = window.location
