@@ -15,6 +15,7 @@
           Location: <span class="loc-name"></span>
           <span class="loc-rate"></span>
         </h2>
+        <h4 class="loc-distance"></h4>
         <h4 class="loc-address"></h4>
         <button onclick="app.onCopyLoc()">Copy location</button>
         <button onclick="app.onShareLoc()">Share location</button>
@@ -87,10 +88,12 @@
               <select class="" onchange="app.onSetGroupBy(this.value)">
                 <option value="rate">Rate</option>
                 <option value="updatedAt">Updated At</option>
+              </select>
             </div>
           </section>
         </section>
       </div>
+      <dialog class="modal"></dialog>
     </main>
     <pre class="debug" hidden></pre>
     <div class="user-msg"></div>
